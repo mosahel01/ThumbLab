@@ -1,0 +1,19 @@
+# env variables
+.env
+.env.local
+
+# python/FastAPI
+__pycache__/
+*.pyc
+venv/
+.venv/
+.thumbnailbuilder.db
+
+# js/reactjs
+node_modules/
+dist/
+.eslintcache
+
+# system files
+.DS_Store
+.vscode/
