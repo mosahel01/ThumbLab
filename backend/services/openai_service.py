@@ -5,13 +5,24 @@ from openai import AsyncOpenAI
 
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
-async def generate_thumbnail( prompt: str, style_prompt: str, headshot_url: str, ) -> bytes:
+async def generate_thumbnail(
+    prompt: str,
+    style_prompt: str,
+    headshot_url: str,
+    timeout_secs: int = 120,
+) -> bytes:
     """
-    Use the Response API with gpt-image-2 as built-in image_generation tool.
-    Pass the headshot URL directly as input_image.
-    Return the raw PNG bytes
-    """
+    Generate a thumbnail image using OpenAI's Response API with gpt-image-2.
 
+    Args:
+        prompt: The user's thumbnail description.
+        style_prompt: Visual style guidance for the generation.
+        headshot_url: Public URL of the reference headshot photo.
+        timeout_secs: Request timeout in seconds.
+
+    Returns:
+        Raw PNG bytes of the generated thumbnail.
+    """
     full_prompt = (
         f"{style_prompt} \n\n"
         f"User Request: {prompt} \n\n"
@@ -27,16 +38,16 @@ async def generate_thumbnail( prompt: str, style_prompt: str, headshot_url: str,
                 "content": [
                     {
                         "type": "input_image",
-                        "url": headshot_url
+                        "url": headshot_url,
                     },
                     {
                         "type": "text",
-                        "url": full_prompt
-                    }
-                ]
+                        "text": full_prompt,
+                    },
+                ],
             }
         ],
-        tools = [
+        tools=[
             {
                 "type": "image_generation",
                 "model": "gpt-image-2",
@@ -44,8 +55,8 @@ async def generate_thumbnail( prompt: str, style_prompt: str, headshot_url: str,
                 "quality": "standard",
                 "output_format": "png",
             }
-        ]
-
+        ],
+        timeout=timeout_secs,
     )
 
     for item in response.output:
