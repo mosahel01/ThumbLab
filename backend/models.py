@@ -5,13 +5,13 @@ from uuid import uuid4
 from sqlmodel import Field, SQLmodel, Relationship
 
 def _uuid() -> str:
-    return str(uuid())
+    return str(uuid4())
 
 
 def _now() -> datetime:
     return datetime.now(timezone.utc)
 
-class Thumbnail(SQLmodel, table=true):
+class Thumbnail(SQLmodel, table=True):
     id : str = Field(default_factory=_uuid, primary_key=True)
     job_id : str = Field(foreign_key="job.id")
     style_name : str = Field(default="")
@@ -22,7 +22,7 @@ class Thumbnail(SQLmodel, table=true):
     job: Optional["Job"] = Relationship(back_populates="thumbnails")
 
 
-class Job(SQLmodel, table=true):
+class Job(SQLmodel, table=True):
     id: str = Field(default_factory=_uuid, primary_key=True)
     prompt : str = Field(default="")
     num_thumbnail: int = Field(default=1, ge=1, le=3)
